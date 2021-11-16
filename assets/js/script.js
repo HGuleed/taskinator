@@ -2,6 +2,53 @@ var taskIdCounter = 0;
 
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var pageContentEl = document.querySelector("#page-content");
+
+var taskButtonHandler = function (event) {
+  // get target element from event
+  var targetEl = event.target;
+
+  // edit button was clicked
+  if (targetEl.matches(".edit-btn")) {
+    var taskId = targetEl.getAttribute("data-task-id");
+    editTask(taskId);
+  }
+  // delete button was clicked
+  else if (targetEl.matches(".delete-btn")) {
+    var taskId = targetEl.getAttribute("data-task-id");
+    deleteTask(taskId);
+  }
+};
+
+var deleteTask = function (taskId) {
+  var taskSelected = document.querySelector(
+    ".task-item[data-task-id='" + taskId + "']"
+  );
+  taskSelected.remove();
+};
+
+if (event.target.matches(".delete-btn")) {
+  var taskId = event.target.getAttribute("data-task-id");
+  deleteTask(taskId);
+}
+
+var editTask = function (taskId) {
+  // get task list item element
+  var taskSelected = document.querySelector(
+    ".task-item[data-task-id='" + taskId + "']"
+  );
+
+  // get content from task name and type
+  var taskName = taskSelected.querySelector("h3.task-name").textContent;
+  
+
+  var taskType = taskSelected.querySelector("span.task-type").textContent;
+  
+};
+
+// other logic...
+
+pageContentEl.addEventListener("click", taskButtonHandler);
 
 var taskFormHandler = function (event) {
   event.preventDefault();
@@ -32,6 +79,11 @@ var createTaskEl = function (taskDataObj) {
   var listItemEl = document.createElement("li");
   listItemEl.className = "task-item";
 
+  var taskActionsEl = createTaskActions(taskIdCounter);
+  listItemEl.appendChild(taskActionsEl);
+
+  tasksToDoEl.appendChild(listItemEl);
+
   // add task id as a custom attribute
   listItemEl.setAttribute("data-task-id", taskIdCounter);
 
@@ -44,6 +96,9 @@ var createTaskEl = function (taskDataObj) {
     taskDataObj.type +
     "</span>";
   listItemEl.appendChild(taskInfoEl);
+
+  var taskActionsEl = createTaskActions(taskIdCounter);
+  console.log(taskActionsEl);
 
   tasksToDoEl.appendChild(listItemEl);
 
@@ -92,6 +147,5 @@ for (var i = 0; i < statusChoices.length; i++) {
   // append to select
   statusSelectEl.appendChild(statusOptionEl);
 }
-
 
 formEl.addEventListener("submit", taskFormHandler);
